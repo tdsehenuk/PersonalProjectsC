@@ -6,11 +6,9 @@
 
 
 int main(int argc, char *argv[]) {
-    
-    
+
     //IPv4, TCP, system chooses protocol
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
-
     //socket() returns a unsigned int so if its value is -1 it failed
     if (server_fd == INVALID_SOCKET) {
         perror("socket failed");
@@ -32,6 +30,21 @@ int main(int argc, char *argv[]) {
     }
 
     printf("Bind successful. Listening on port 8080...\n");
+
+    //int listen(SOCKET sockfd, int backlog)
+    //SOMAXCONN = backlog to maximum reasonal value
+    if(listen(server_fd, SOMAXCONN) == SOCKET_ERROR) {
+        printf("Listen failed with error code: %d\n", WSAGetLastError());
+        closesocket(server_fd);
+        WSACleanup();
+        return 1;
+    }
+
+    printf("Listening for incoming connections...\n");
+
+
+
+
 
 
 
