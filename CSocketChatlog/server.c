@@ -43,8 +43,18 @@ int main(int argc, char *argv[]) {
     printf("Listening for incoming connections...\n");
 
 
+    struct sockaddr_in client_addr;
+    int client_addr_len = sizeof(client_addr);
+    SOCKET client_socket = accept(server_fd, (struct sockaddr*)&client_addr, &client_addr_len);
 
+    if(client_socket == INVALID_SOCKET) {
+        printf("Accept failed with error code: %d\n", WSAGetLastError());
+        closesocket(server_fd);
+        WSACleanup();
+        return 1;
+    }
 
+    printf("Client connected!\n");
 
 
 
