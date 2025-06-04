@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     }
 
     //IPv4, TCP, system chooses protocol
-    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    SOCKET server_fd = socket(AF_INET, SOCK_STREAM, 0);
     //socket() returns a unsigned int so if its value is -1 it failed
     if (server_fd == INVALID_SOCKET) {
         perror("socket failed");
@@ -64,23 +64,36 @@ int main(int argc, char *argv[]) {
     printf("Client connected!\n");
 
     char buffer[512];
-    int bytes_recieved = recv(client_socket, buffer, sizeof(buffer)-1, 0);
-
-    if(bytes_recieved == SOCKET_ERROR) {
-        printf("recv failed with error code: %d\n", WSAGetLastError());
-    } else if (bytes_recieved == 0) {
-        printf("Client disconnected.\n");
-    } else {
-        buffer[bytes_recieved] = '\0';
+    while (1) {
+        int bytes_received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
+        if (bytes_received == SOCKET_ERROR) {
+            printf("recv failed with error code: %d\n", WSAGetLastError());
+            break;
+        }
+        if (bytes_received == 0) {
+            printf("Client disconnected.\n");
+            break;
+        }
+        buffer[bytes_received] = '\0';
         printf("Received from client: %s\n", buffer);
 
-    const char *reply = "MESSAGED RECIEVED!!!!!!";
-    int bytes_sent = send(client_socket, reply, (int)strlen(reply) , 0); 
-    if(bytes_sent == SOCKET_ERROR) {
-        printf("send failed with error code: %d\n", WSAGetLastError());
+        if (strcmp(buffer, "quit\n") == 0) {
+            printf("Client requested to quit.\n");
+            break;
+        }
 
+        const char *reply = "MESSAGE RECEIVED!!!!!!\n";
+        int bytes_sent = send(client_socket, reply, (int)strlen(reply), 0);
+        if (bytes_sent == SOCKET_ERROR) {
+            printf("send failed with error code: %d\n", WSAGetLastError());
+            break;
+        }
     }
 
+
+    closesocket(client_socket);
+    closesocket(server_fd);
+    WSACleanup();
 
 
     return 0;
