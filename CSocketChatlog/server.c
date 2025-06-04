@@ -7,6 +7,12 @@
 
 int main(int argc, char *argv[]) {
 
+    WSADATA wsa;
+    if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
+        printf("Failed to initialize Winsock. Error code: %d\n", WSAGetLastError());
+        return 1;
+    }
+
     //IPv4, TCP, system chooses protocol
     int server_fd = socket(AF_INET, SOCK_STREAM, 0);
     //socket() returns a unsigned int so if its value is -1 it failed
@@ -42,9 +48,10 @@ int main(int argc, char *argv[]) {
 
     printf("Listening for incoming connections...\n");
 
-
+    //new socket address
     struct sockaddr_in client_addr;
     int client_addr_len = sizeof(client_addr);
+    //returns a new socketfd 
     SOCKET client_socket = accept(server_fd, (struct sockaddr*)&client_addr, &client_addr_len);
 
     if(client_socket == INVALID_SOCKET) {
@@ -56,7 +63,23 @@ int main(int argc, char *argv[]) {
 
     printf("Client connected!\n");
 
+    char buffer[512];
+    int bytes_recieved = recv(client_socket, buffer, sizeof(buffer)-1, 0);
 
+    if(bytes_recieved == SOCKET_ERROR) {
+        printf("recv failed with error code: %d\n", WSAGetLastError());
+    } else if (bytes_recieved == 0) {
+        printf("Client disconnected.\n");
+    } else {
+        buffer[bytes_recieved] = '\0';
+        printf("Received from client: %s\n", buffer);
+
+    const char *reply = "MESSAGED RECIEVED!!!!!!";
+    int bytes_sent = send(client_socket, reply, (int)strlen(reply) , 0); 
+    if(bytes_sent == SOCKET_ERROR) {
+        printf("send failed with error code: %d\n", WSAGetLastError());
+
+    }
 
 
 
