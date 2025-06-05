@@ -63,8 +63,9 @@ int main(int argc, char *argv[]) {
 
     printf("Client connected!\n");
 
-    char buffer[512];
+   
     while (1) {
+        char buffer[512];
         int bytes_received = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
         if (bytes_received == SOCKET_ERROR) {
             printf("recv failed with error code: %d\n", WSAGetLastError());
@@ -77,17 +78,23 @@ int main(int argc, char *argv[]) {
         buffer[bytes_received] = '\0';
         printf("Received from client: %s\n", buffer);
 
-        if (strcmp(buffer, "quit\n") == 0) {
+        if (strcmp(buffer, "exit") == 0) {
             printf("Client requested to quit.\n");
             break;
         }
 
-        const char *reply = "MESSAGE RECEIVED!!!!!!\n";
-        int bytes_sent = send(client_socket, reply, (int)strlen(reply), 0);
+        //const char *reply = "MESSAGE RECEIVED!!!!!!\n";
+        char send_msg[512];
+        printf("\nYour message to the client: ");
+        fgets(send_msg, sizeof(send_msg), stdin);
+        send_msg[strcspn(send_msg, "\n")] = 0;  // remove newline
+
+        int bytes_sent = send(client_socket, send_msg, (int)strlen(send_msg), 0);
         if (bytes_sent == SOCKET_ERROR) {
             printf("send failed with error code: %d\n", WSAGetLastError());
             break;
         }
+      
     }
 
 
