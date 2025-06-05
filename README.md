@@ -8,8 +8,10 @@ The goal is to build useful, fun, or educational tools while deepening my unders
 - 📇 **Contact List App** – A basic address book that lets users add, edit, search, and delete contacts.
 - ✅ **To-Do List App** – A console-based app for creating, editing, and removing tasks.
 
-## Future Project Ideas
+## Working On:
 - 🌐 **WebSocket Implementation** – Implement a minimal WebSocket client/server in C.
+
+## Future Project Ideas
 - 🧮 **Simple Calculator** – A command-line calculator that handles basic arithmetic and expression parsing.
 - 🧊 **File Encryption Tool** – Encrypt and decrypt text files using a basic algorithm like XOR or Caesar cipher.
 
